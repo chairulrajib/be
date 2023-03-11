@@ -1,11 +1,15 @@
+const dotenv = require('dotenv')
+dotenv.config()
 const express = require('express');
-const PORT = 2305;
+const PORT = process.env.PORT;
 const app = express();
 const cors = require('cors');
 const { dbConf } = require('./src/config/db');
+const bearerToken = require('express-bearer-token')
 
 app.use(express.json())
 app.use(cors())
+app.use(bearerToken())
 
 app.get('/',(req,res)=>{
     res.status(200).send('<h1>ESHOP API</h1>')

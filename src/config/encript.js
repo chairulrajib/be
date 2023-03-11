@@ -12,7 +12,7 @@ module.exports ={
     },
     createToken: (payload, expired = '24h') => {
         console.log(payload);
-        let token = jwt.sign(payload, 'prw', {
+        let token = jwt.sign(payload, process.env.KEY, {
             expiresIn: expired
         })
 

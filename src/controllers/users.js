@@ -96,16 +96,18 @@ module.exports = {
       }
     );
   },
-  keepLogin :(req,res) =>{
+  keepLogin :(req,res) =>{ 
+    console.log(req.decript)
     dbConf.query(
       `Select id as iduser, username, email, password 
-        from users where id=${dbConf.escape(req.body.id)} or username=${dbConf.escape(req.body.name)};`,
+        from users where id=${dbConf.escape(req.decript.iduser)} or username=${dbConf.escape(req.body.name)};`,
       (err, results) => {
         if (err) {
           console.log(err);
           return res.status(500).send(err);
         }
-          return res.status(200).send(results[0]);
+        let token = createToken({...results[0]}) //karna mutable/imutabel 
+          return res.status(200).send({ ...results[0], token });
        
       }
     );
