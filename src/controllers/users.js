@@ -1,6 +1,7 @@
 const { dbConf } = require("../config/db");
 const { hashPassword, createToken } = require("../config/encript");
 const bcrypt = require("bcrypt");
+const {transport} = require('../config/nodemailer')
 
 module.exports = {
   getData: (req, res) => {
@@ -46,14 +47,33 @@ module.exports = {
             (errInsert, resultInsert) => {
               //jika saat insert ke db ada error
               if (errInsert) {
+                console.log(errInsert)
                 return res.status(500).send(errInsert);
               }
-              //jika saat insert ke db lancar
 
-              res.status(201).send({
-                success: true,
-                message: `Register Your account is Success`,
-              });
+              console.log(`resultInsert : ${resultInsert}`)
+
+              //jika saat insert ke db lancar, maka kirim email verifikasi
+              transport.sendMail({
+                from:'StayComfy',
+                to :email,
+                subject:'Verification Email Account StayComfy',
+                html:`<div>
+                <h3>Click link below for verify your email</h3>
+                <a href="http://localhost:3000/verification">Verify Now !</a>
+                </div>`
+              }, (err,info)=>{
+                if(err) {
+                  console.log(`error : ${err}`)
+                  return res.status(400).send(err);
+                }
+                return res.status(201).send({
+                  success:true,
+                  message: 'Register your account is success, Check your email',
+                  info
+                })
+              })
+              
             }
           );
         }
@@ -62,7 +82,7 @@ module.exports = {
   },
   login: (req, res) => {
     dbConf.query(
-      `Select id as iduser, username, email, password 
+      `Select id as iduser, username, email, password
         from users where email=${dbConf.escape(req.body.email)} or username=${dbConf.escape(req.body.name)};`,
       (err, results) => {
         if (err) {
@@ -111,6 +131,9 @@ module.exports = {
        
       }
     );
+  },
+  verifiedAccount : (req,res)=> {
+    console.log(req.decript); 
   },
   update: (req, res) => {},
   delete: (req, res) => {},

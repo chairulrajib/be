@@ -18,4 +18,18 @@ module.exports ={
 
         return token;
     },
+    readToken : (req,res,next)=>{
+        // pengecekan token
+        jwt.verify(req.token, process.env.KEY,(err, decript) =>{
+            if(err) { 
+                return res.data.status(401).send({
+                    success:false,
+                    message: 'Authenticate token failed'
+                })
+            }
+        
+            req.decript = decript // menampung data hasil terjemah token
+            next()
+        } ) //prw adalah kunci, dia harus sama dengan yg di encript
+        }
 }
