@@ -11,7 +11,7 @@ module.exports={
             destination:(req,file,cb)=>{
                 //menentukan lokasi penyimpanan
                 const pathDir = directory ? defaultDir + directory :defaultDir
-
+                console.log(pathDir)
                 //melakukan pemeriksaan pathDir
                 if(fs.existsSync(pathDir)){
                     //jika directory ada, maka multer melakukan cb
@@ -19,11 +19,13 @@ module.exports={
                     cb(null,pathDir)
                 } else {
                     // jika tidak ada maka bikin directory tsb
-                    if(err){
-                        console.log(`Error make directoory`,err)
-                    }
+                    fs.mkdir(pathDir, { recursive: true }, (err) => {
+                        if (err) {
+                            console.log(`Error make directory`, err);
+                        }
 
-                    cb(err, pathDir)
+                        cb(err, pathDir);
+                    })
                 }
             },
             filename : (req,file,cb) =>{

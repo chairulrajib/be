@@ -11,7 +11,7 @@ module.exports ={
         return hashPass;
     },
     createToken: (payload, expired = '24h') => {
-        console.log(payload);
+        // console.log(payload);
         let token = jwt.sign(payload, process.env.KEY, {
             expiresIn: expired
         })
@@ -27,7 +27,7 @@ module.exports ={
                     message: 'Authenticate token failed'
                 })
             }
-        
+            // console.log(`req di readtoken: ${decript}`)
             req.decript = decript // menampung data hasil terjemah token
             next()
         } ) //prw adalah kunci, dia harus sama dengan yg di encript
